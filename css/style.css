@@ -1,0 +1,269 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background: url('../image/bg.png') no-repeat center/cover fixed;
+    min-height: 100vh;
+    padding: 10px;
+    background-color: #f8f8f8;
+}
+
+.result-sheet {
+    max-width: 950px;
+    width: 100%;
+    margin: 15px auto;
+    background: white;
+    padding: 20px;
+    border: 1px solid #222;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.left, .right {
+    flex: 1;
+    min-width: 220px;
+}
+
+.centre {
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+.centre img {
+    max-width: 110px;
+    height: auto;
+}
+
+.moto {
+    font-style: italic;
+    font-size: 0.9rem;
+    margin-top: 6px;
+    color: #444;
+}
+
+.school-name {
+    text-align: center;
+    font-size: 1.35rem;
+    font-weight: bold;
+    margin: 12px 0 6px;
+    line-height: 1.3;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.line {
+    height: 4px;
+    background: #000;
+    margin: 12px 0;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin: 15px 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+th, td {
+    border: 1px solid #333;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background: #f0f0f0;
+    font-weight: bold;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-weight: bold;
+    margin: 18px 0;
+    font-size: 1.05rem;
+}
+
+.summary p {
+    flex: 1 1 30%;
+    min-width: 140px;
+}
+
+
+.center {
+    text-align: center;
+}
+
+.footer-note img {
+    max-width: 100px;
+    height: auto;
+    margin: 15px auto 8px;
+    display: block;
+}
+
+/* ────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+
+
+
+
+
+/* ────────────────────────────────────────
+   FORM & LAYOUT STYLES
+───────────────────────────────────────── */
+
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+.page-title {
+    text-align: center;
+    color: #222;
+    margin-bottom: 30px;
+    font-size: 2rem;
+}
+
+.form-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    padding: 24px;
+    margin-bottom: 30px;
+}
+
+.form-card h2 {
+    margin-bottom: 20px;
+    color: #0066cc;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #444;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.course-entry {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.action-buttons {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.primary-btn, .add-btn, .secondary-btn {
+    padding: 12px 24px;
+    font-size: 1.05rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.primary-btn {
+    background: #0066cc;
+    color: white;
+}
+
+.primary-btn:hover { background: #004c99; }
+
+.add-btn {
+    background: #28a745;
+    color: white;
+}
+
+.add-btn:hover { background: #218838; }
+
+.secondary-btn {
+    background: #6c757d;
+    color: white;
+}
+
+.secondary-btn:hover { background: #5a6268; }
+
+.remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+/* Hide result initially */
+#resultSection { display: none; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-grid, .course-grid {
+        grid-template-columns: 1fr;
+    }
+    .page-title { font-size: 1.6rem; }
+}
