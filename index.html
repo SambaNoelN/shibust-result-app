@@ -22,19 +22,23 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" id="studentName" placeholder="Enter full name">
+                    <input type="text" id="studentName" placeholder="Enter full name" required>
                 </div>
                 <div class="form-group">
                     <label>Matriculation Number</label>
-                    <input type="text" id="matricNo" placeholder="e.g. SHB/ENG/21/1234">
+                    <input type="text" id="matricNo" placeholder="e.g. SHB/ENG/21/1234" required>
                 </div>
                 <div class="form-group">
                     <label>Major / Programme</label>
-                    <input type="text" id="major" placeholder="e.g. Computer Engineering">
+                    <input type="text" id="major" placeholder="e.g. Computer Engineering" required>
                 </div>
                 <div class="form-group">
                     <label>Level</label>
-                    <input type="text" id="level" placeholder="e.g. 200 Level">
+                    <input type="text" id="level" placeholder="e.g. 200 Level" required>
+                </div>
+                <div class="form-group">
+                    <label>Semester:</label>
+                    <input type="text" id="semester" placeholder="e.g. Second semester">
                 </div>
             </div>
         </div>
@@ -68,8 +72,8 @@
             </div>
 
             <div class="right">
-                <p><strong>Department:</strong> Computer Engineering</p>
-                <p><strong>Semester:</strong> First Semester</p>
+                <p><strong>Department:</strong><span id="displayMajor"></span></p>
+                <p><strong>Semester:</strong><span id="displaySemester"></span></p>
                 <p><strong>Academic Year:</strong> 2025/2026</p>
             </div>
         </div>

@@ -58,11 +58,15 @@ $(document).ready(function () {
         const matric = $("#matricNo").val().trim() || "—";
         const major = $("#major").val().trim() || "—";
         const level = $("#level").val().trim() || "—";
+        const department = $("#department").val().trim() || "-";
+        const semester = $("#semester").val().trim() || "-";
 
         $("#displayName").text(name);
         $("#displayMatric").text(matric);
         $("#displayMajor").text(major);
         $("#displayLevel").text(level);
+        $("#displayMajor").trim(department);
+        $("#displaySemester").trim(semester);
 
         // Clear previous table
         $("#resultTable tbody").empty();
@@ -72,7 +76,7 @@ $(document).ready(function () {
         let totalPoints = 0;
 
         function getGrade(mark) {
-            if (mark >= 70) return { grade: "A", point: 5 };
+            if (mark >= 80) return { grade: "A", point: 5 };
             if (mark >= 60) return { grade: "B", point: 4 };
             if (mark >= 50) return { grade: "C", point: 3 };
             if (mark >= 45) return { grade: "D", point: 2 };
