@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHIBUST | Semester Result</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="icon" href="image/logo.png">
     <link rel="stylesheet" href="./css/style.css">
 
@@ -11,114 +12,129 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
+
 <body>
 
-    <!-- Input Form Section -->
-    <div class="container" id="inputSection">
-        <h1 class="page-title">SHIBUST Semester Result Generator</h1>
+<!-- ================= INPUT SECTION ================= -->
 
-        <div class="form-card">
-            <h2>Student Information</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="studentName" placeholder="Enter full name" required>
-                </div>
-                <div class="form-group">
-                    <label>Matriculation Number</label>
-                    <input type="text" id="matricNo" placeholder="e.g. SHB/ENG/21/1234" required>
-                </div>
-                <div class="form-group">
-                    <label>Major / Programme</label>
-                    <input type="text" id="major" placeholder="e.g. Computer Engineering" required>
-                </div>
-                <div class="form-group">
-                    <label>Level</label>
-                    <input type="text" id="level" placeholder="e.g. 200 Level" required>
-                </div>
-                <div class="form-group">
-                    <label>Semester:</label>
-                    <input type="text" id="semester" placeholder="e.g. Second semester">
-                </div>
+<div class="container" id="inputSection">
+    <h1 class="page-title">SHIBUST Semester Result Generator</h1>
+
+    <div class="form-card">
+        <h2>Student Information</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="studentName" required>
             </div>
-        </div>
 
-        <div class="form-card">
-            <h2>Courses & Scores</h2>
-            <div id="coursesContainer"></div>
+            <div class="form-group">
+                <label>Matriculation Number</label>
+                <input type="text" id="matricNo" required>
+            </div>
 
-            <button id="addCourseBtn" class="add-btn">+ Add New Course</button>
+            <div class="form-group">
+                <label>Major / Programme</label>
+                <input type="text" id="major" required>
+            </div>
 
-            <div class="action-buttons">
-                <button id="generateResultBtn" class="primary-btn">Generate Result Sheet</button>
+            <div class="form-group">
+                <label>Level</label>
+                <input type="text" id="level" required>
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" id="department" required>
+            </div>
+
+            <div class="form-group">
+                <label>Semester</label>
+                <input type="text" id="semester" required>
             </div>
         </div>
     </div>
 
-    <!-- Result Sheet Section (hidden initially) -->
-    <div class="result-sheet" id="resultSection" style="display: none;">
+    <div class="form-card">
+        <h2>Courses & Scores</h2>
+        <div id="coursesContainer"></div>
 
-        <div class="header">
-            <div class="left">
-                <p><strong>Name:</strong> <span id="displayName"></span></p>
-                <p><strong>Matric No:</strong> <span id="displayMatric"></span></p>
-                <p><strong>Major:</strong> <span id="displayMajor"></span></p>
-                <p><strong>Level:</strong> <span id="displayLevel"></span></p>
-            </div>
-
-            <div class="centre">
-                <img src="image/logo.png" alt="SHIBUST Logo">
-                <div class="moto">igniting minds - inspiring future</div>
-            </div>
-
-            <div class="right">
-                <p><strong>Department:</strong><span id="displayMajor"></span></p>
-                <p><strong>Semester:</strong><span id="displaySemester"></span></p>
-                <p><strong>Academic Year:</strong> 2025/2026</p>
-            </div>
-        </div>
-
-        <h2 class="school-name">SOLIDARITY HIGHER INSTITUTION OF BUSINESS SCIENCE AND TECHNOLOGY</h2>
-        <h3 class="subtitle">Semester Results</h3>
-        <hr class="line">
-
-        <div class="table-wrapper">
-            <table id="resultTable">
-                <thead>
-                    <tr>
-                        <th>S/N</th>
-                        <th>Course Code</th>
-                        <th>Course Title</th>
-                        <th>CV</th>
-                        <th>CA</th>
-                        <th>Exam</th>
-                        <th>Total</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <div class="summary">
-            <p>Attempted Credit: <span id="attempted">—</span></p>
-            <p>Credit Earned: <span id="earned">—</span></p>
-            <p>GPA: <span id="gpa">—</span>/4.0</p>
-        </div>
+        <button id="addCourseBtn" class="add-btn">+ Add New Course</button>
 
         <div class="action-buttons">
-            <button id="printBtn" class="primary-btn">Print / Save PDF</button>
-            <button id="editDataBtn" class="secondary-btn">Edit Data</button>
+            <button id="generateResultBtn" class="primary-btn">Generate Result Sheet</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= RESULT SECTION ================= -->
+
+<div class="result-sheet" id="resultSection" style="display:none;">
+
+    <div class="header">
+        <div class="left">
+            <p><strong>Name:</strong> <span id="displayName"></span></p>
+            <p><strong>Matric No:</strong> <span id="displayMatric"></span></p>
+            <p><strong>Major:</strong> <span id="displayMajor"></span></p>
+            <p><strong>Level:</strong> <span id="displayLevel"></span></p>
         </div>
 
-        <div class="center footer-note">
-            <img src="image/qrcode.png" alt="School QR Code">
-            <p>To get more info about this school scan the QR code below</p><br>
-            <p>Contact admin for corrections:<br><strong>shibust2023@gmail.com</strong></p>
+        <div class="centre">
+            <img src="image/logo.png" alt="SHIBUST Logo">
+            <div class="moto">Igniting Minds - Inspiring Future</div>
         </div>
 
+        <div class="right">
+            <p><strong>Department:</strong> <span id="displayDepartment"></span></p>
+            <p><strong>Semester:</strong> <span id="displaySemester"></span></p>
+            <p><strong>Academic Year:</strong> 2025/2026</p>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <h2 class="school-name">
+        SOLIDARITY HIGHER INSTITUTION OF BUSINESS SCIENCE AND TECHNOLOGY
+    </h2>
+
+    <h3 class="subtitle">Semester Results</h3>
+    <hr class="line">
+
+    <div class="table-wrapper">
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>S/N</th>
+                    <th>Course Code</th>
+                    <th>Course Title</th>
+                    <th>CV</th>
+                    <th>CA</th>
+                    <th>Exam</th>
+                    <th>Total</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="summary">
+        <p>Attempted Credit: <span id="attempted">—</span></p>
+        <p>Credit Earned: <span id="earned">—</span></p>
+        <p>GPA: <span id="gpa">—</span>/4.0</p>
+    </div>
+
+    <div class="action-buttons">
+        <button id="printBtn" class="primary-btn">Print / Save PDF</button>
+        <button id="editDataBtn" class="secondary-btn">Edit Data</button>
+    </div>
+
+    <div class="center footer-note">
+        <img src="image/qrcode.png" alt="QR Code">
+        <p>To get more info about this school scan the QR code above</p>
+        <p><strong>Contact:</strong> shibust2023@gmail.com</p>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
