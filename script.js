@@ -69,8 +69,8 @@ $(document).ready(function () {
 
             if (!code || !title || !cv) return;
 
-            if (ca > 40 || exam > 60) {
-                alert("CA must be ≤ 40 and Exam ≤ 60.");
+            if (ca > 30 || exam > 70) {
+                alert("CA must be ≤ 30 and Exam ≤ 70.");
                 return;
             }
 
