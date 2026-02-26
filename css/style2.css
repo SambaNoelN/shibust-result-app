@@ -295,6 +295,7 @@ tbody tr:hover {
         background: white;
     }
 
+    .action-buttons,
     .container,
     .action-buttons,
     .footer-note p:last-child {
