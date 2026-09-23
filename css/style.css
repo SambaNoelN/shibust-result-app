@@ -1,0 +1,160 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #f4f6f9;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+    margin-bottom: 15px;
+}
+
+.grid {
+    display: grid;
+    gap: 15px;
+}
+
+.grid input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
+.course-entry {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.course-entry input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.btn {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.primary {
+    background: #1e88e5;
+    color: #fff;
+}
+
+.primary:hover {
+    background: #1565c0;
+}
+
+.secondary {
+    background: #e0e0e0;
+}
+
+.result-section {
+    display: none;
+    max-width: 900px;
+    margin: auto;
+}
+
+.result-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.result-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.info p {
+    margin-bottom: 5px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background: #1e88e5;
+    color: white;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.actions .btn {
+    width: 100%;
+}
+
+
+/* Responsive */
+@media (min-width: 768px) {
+
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .course-entry {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .summary {
+        justify-content: space-around;
+    }
+
+}
