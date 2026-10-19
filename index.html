@@ -1,229 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>SHIBUST | Semester Result</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="icon" href="image/logo.png">
-    <link rel="stylesheet" href="css/style2.css">
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#102a43">
+	<title>SHIBUST | Result Portal</title>
+	<style>
+		:root {
+			color-scheme: light;
+			font-family: Inter, "Segoe UI", Arial, sans-serif;
+			color: #172b4d;
+			background: #f2f6fb;
+		}
+		* { box-sizing: border-box; }
+		body {
+			min-height: 100vh;
+			margin: 0;
+			display: grid;
+			place-items: center;
+			padding: 24px;
+			background: radial-gradient(circle at 15% 10%, #dcecff 0, transparent 34%),
+									radial-gradient(circle at 90% 90%, #d9f1e8 0, transparent 30%), #f5f8fc;
+		}
+		.portal {
+			width: min(100%, 450px);
+			padding: clamp(28px, 7vw, 48px);
+			background: #fff;
+			border: 1px solid #e4ebf3;
+			border-radius: 20px;
+			box-shadow: 0 22px 60px rgba(16, 42, 67, .12);
+		}
+		.mark {
+			width: 52px;
+			height: 52px;
+			display: grid;
+			place-items: center;
+			margin-bottom: 24px;
+			border-radius: 15px;
+			background: #e8f1ff;
+			color: #1761b0;
+			font-size: 20px;
+			font-weight: 800;
+			letter-spacing: -.06em;
+		}
+		.eyebrow { margin: 0 0 8px; color: #1761b0; font-size: 12px; font-weight: 800; letter-spacing: .14em; }
+		h1 { margin: 0; color: #102a43; font-size: clamp(27px, 6vw, 34px); letter-spacing: -.04em; }
+		.intro { margin: 12px 0 28px; color: #62758b; line-height: 1.6; }
+		label { display: block; margin-bottom: 9px; font-size: 14px; font-weight: 700; }
+		input {
+			width: 100%;
+			min-height: 52px;
+			padding: 0 15px;
+			border: 1px solid #cbd6e2;
+			border-radius: 10px;
+			color: #172b4d;
+			font: inherit;
+			outline: none;
+			transition: border-color .2s, box-shadow .2s;
+		}
+		input:focus { border-color: #2878c7; box-shadow: 0 0 0 3px rgba(40, 120, 199, .15); }
+		input::placeholder { color: #9aa9b8; }
+		button {
+			width: 100%;
+			min-height: 52px;
+			margin-top: 16px;
+			border: 0;
+			border-radius: 10px;
+			background: #1761b0;
+			color: #fff;
+			font: inherit;
+			font-weight: 700;
+			cursor: pointer;
+			transition: background .2s, transform .2s;
+		}
+		button:hover { background: #104d91; }
+		button:active { transform: translateY(1px); }
+		.message { min-height: 22px; margin: 12px 0 0; color: #b42318; font-size: 14px; }
+		.hint { margin: 15px 0 0; color: #8291a2; font-size: 12px; line-height: 1.5; }
+		@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+	</style>
 </head>
-
 <body>
+	<main class="portal">
+		<div class="mark" aria-hidden="true">S</div>
+		<p class="eyebrow">SHIBUST</p>
+		<h1>Semester Result Portal</h1>
+		<p class="intro">Enter your portal access code to continue to the right dashboard.</p>
 
-<div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <img src="image/logo.png" alt="">
-            <span><strong>SHIBUST</strong><small>Result Portal</small></span>
-        </div>
+		<form id="access-form">
+			<label for="access-code">Access code</label>
+			<input id="access-code" name="access-code" type="password" autocomplete="off" placeholder="Enter your code" required aria-describedby="access-message">
+			<button type="submit">Continue</button>
+			<p class="message" id="access-message" role="alert" aria-live="polite"></p>
+		</form>
+		<p class="hint">If you do not have an access code, contact your school administrator.</p>
+	</main>
 
-        <p class="nav-heading">WORKSPACE</p>
-        <nav class="sidebar-nav" aria-label="Main navigation">
-            <button class="nav-link active" type="button" data-view="inputSection">
-                <span class="nav-icon" aria-hidden="true">▦</span>
-                <span>Result Generator</span>
-            </button>
-            <button class="nav-link" id="resultNav" type="button" data-view="resultSection" disabled>
-                <span class="nav-icon" aria-hidden="true">▤</span>
-                <span>Result Sheet</span>
-            </button>
-            <button class="nav-link" type="button" data-view="publishedSection">
-                <span class="nav-icon" aria-hidden="true">▣</span>
-                <span>Published Results</span>
-            </button>
-        </nav>
+	<script>
+		// Demo-only codes. Replace these with server-side authentication before deployment.
+		const ACCESS_CODES = {
+			'SHIBUST-ADMIN': 'admin.html',
+			'SHIBUST-STUDENT': 'student.html'
+		};
 
-        <div class="sidebar-footer">
-            <span class="sidebar-footer-mark">S</span>
-            <span><strong>Academic Office</strong><small>Semester results</small></span>
-        </div>
-    </aside>
+		document.getElementById('access-form').addEventListener('submit', (event) => {
+			event.preventDefault();
+			const code = document.getElementById('access-code').value.trim().toUpperCase();
+			const destination = ACCESS_CODES[code];
+			const message = document.getElementById('access-message');
 
-    <div class="workspace">
-        <header class="topbar">
-            <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">
-                <span></span><span></span><span></span>
-            </button>
-            <div class="topbar-heading">
-                <p>SHIBUST ACADEMIC PORTAL</p>
-                <h2 id="viewTitle">Result Generator</h2>
-            </div>
-            <div class="topbar-account">
-                <span class="account-avatar" aria-hidden="true">A</span>
-                <span><strong>Academic Office</strong><small>Result management</small></span>
-            </div>
-        </header>
+			if (!destination) {
+				message.textContent = 'That access code is not recognized. Please check it and try again.';
+				return;
+			}
 
-        <main class="content-area">
-<!-- ================= INPUT SECTION ================= -->
-
-<div class="container" id="inputSection">
-    <h1 class="page-title">SOLIDARITY HIGHER INSTITUTE OF BUSINESS SCIENCE AND TECHNOLOGY</h1>
-    <h1 class="page-title">(SHIBUST)</h1>
-
-    <div class="form-card">
-        <h2>Student Information</h2>
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="studentName" required>
-            </div>
-
-            <div class="form-group">
-                <label>Matriculation Number</label>
-                <input type="text" id="matricNo" required>
-            </div>
-
-            <div class="form-group">
-                <label>Major / Programme</label>
-                <input type="text" id="major" required>
-            </div>
-
-            <div class="form-group">
-                <label>Level</label>
-                <select id="level" required>
-                    <option value="" disabled selected>Select level</option>
-                    <option value="100">100</option>
-                    <option value="200">200</option>
-                    <option value="300">300</option>
-                    <option value="400">400</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Department</label>
-                <select id="department" required>
-                    <option value="" disabled selected>Select department</option>
-                    <option value="Medical">Medical</option>
-                    <option value="Business">Business</option>
-                    <option value="Computer">Computer</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Semester</label>
-                <select id="semester" required>
-                    <option value="" disabled selected>Select semester</option>
-                    <option value="First Semester">First Semester</option>
-                    <option value="Second Semester">Second Semester</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-card">
-        <h2>Courses & Scores</h2>
-        <div id="coursesContainer"></div>
-
-        <button id="addCourseBtn" class="add-btn">+ Add New Course</button>
-
-        <div class="action-buttons">
-            <button id="generateResultBtn" class="primary-btn">Generate Sheet</button>
-            <button id="publishResultBtn" class="secondary-btn" type="button">Publish Result</button>
-        </div>
-     </div>
-</div>
-<!-- ================= RESULT SECTION ================= -->
-
-<div class="result-sheet" id="resultSection" style="display:none;">
-
-    <div class="header">
-        <div class="left">
-            <p><strong>Name:</strong> <span id="displayName"></span></p>
-            <p><strong>Matric No:</strong> <span id="displayMatric"></span></p>
-            <p><strong>Major:</strong> <span id="displayMajor"></span></p>
-            <p><strong>Level:</strong> <span id="displayLevel"></span></p>
-        </div>
-
-        <div class="centre">
-            <img src="image/logo.png" alt="SHIBUST Logo">
-            <div class="moto">Igniting Minds - Inspiring Future</div>
-        </div>
-
-        <div class="right">
-            <p><strong>Department:</strong> <span id="displayDepartment"></span></p>
-            <p><strong>Semester:</strong> <span id="displaySemester"></span></p>
-            <p><strong>Academic Year:</strong> <span id="academicYear"></span></p>
-        </div>
-    </div>
-
-    <h2 class="school-name">
-        SOLIDARITY HIGHER INSTITUTION OF BUSINESS SCIENCE AND TECHNOLOGY
-    </h2>
-
-    <h3 class="subtitle">Semester Results</h3>
-    <hr class="line">
-
-    <div class="table-wrapper">
-        <table id="resultTable">
-            <thead>
-                <tr>
-                    <th>S/N</th>
-                    <th>Course Code</th>
-                    <th>Course Title</th>
-                    <th>CV</th>
-                    <th>CA</th>
-                    <th>Exam</th>
-                    <th>Total</th>
-                    <th>Grade</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <div class="summary">
-        <p>Attempted Credit: <span id="attempted">—</span></p>
-        <p>Credit Earned: <span id="earned">—</span></p>
-        <p>GPA: <span id="gpa">—</span>/4.0</p>
-    </div>
-
-    <div class="action-buttons">
-        <button id="printBtn" class="primary-btn">Print / Save PDF</button>
-        <button id="publishCurrentResultBtn" class="secondary-btn" type="button">Publish Result</button>
-        <button id="editDataBtn" class="secondary-btn">Edit Data</button>
-    </div>
-
-    <div class="center footer-note">
-        <img src="image/qrcode.png" alt="QR Code">
-        <p>To get more info about this school scan the QR code above</p>
-        <p><strong>Contact:</strong> shibust2023@gmail.com</p>
-    </div>
-</div>
-
-<section class="container published-page" id="publishedSection" style="display:none;" aria-labelledby="publishedTitle">
-    <div class="published-card">
-        <h1 id="publishedTitle">Published Results</h1>
-        <p class="published-description">View reports that have been published from this browser.</p>
-        <div class="table-wrapper">
-            <table class="published-table">
-                <thead>
-                    <tr>
-                        <th>Full Name</th>
-                        <th>Matriculation Number</th>
-                        <th>Semester</th>
-                        <th>Academic Year</th>
-                        <th>Report</th>
-                    </tr>
-                </thead>
-                <tbody id="publishedResultsBody"></tbody>
-            </table>
-        </div>
-        <p class="published-empty" id="publishedResultsEmpty">No results have been published yet.</p>
-    </div>
-</section>
-
-        </main>
-    </div>
-    <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation menu"></button>
-</div>
-
-<script src="script.js"></script>
-
+			window.location.href = destination;
+		});
+	</script>
 </body>
 </html>
