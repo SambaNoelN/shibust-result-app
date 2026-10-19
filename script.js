@@ -1,5 +1,34 @@
 $(document).ready(function () {
 
+    function syncNavigation(view) {
+        const isResultView = view === "resultSection";
+        $(".nav-link").removeClass("active");
+        $(`.nav-link[data-view="${view}"]`).addClass("active");
+        $("#viewTitle").text(isResultView ? "Result Sheet" : "Result Generator");
+    }
+
+    function closeMobileSidebar() {
+        $(".app-shell").removeClass("sidebar-open");
+        $("#sidebarToggle").attr("aria-expanded", "false");
+    }
+
+    $(".nav-link").click(function () {
+        const view = $(this).data("view");
+        if ($(this).prop("disabled")) return;
+
+        $("#inputSection, #resultSection").hide();
+        $(`#${view}`).fadeIn();
+        syncNavigation(view);
+        closeMobileSidebar();
+    });
+
+    $("#sidebarToggle").click(function () {
+        const isOpen = $(".app-shell").toggleClass("sidebar-open").hasClass("sidebar-open");
+        $(this).attr("aria-expanded", String(isOpen));
+    });
+
+    $("#sidebarBackdrop").click(closeMobileSidebar);
+
     function addCourseRow() {
         const html = `
             <div class="course-entry">
@@ -114,17 +143,23 @@ $(document).ready(function () {
         $("#displayDepartment").text(department);
         $("#displaySemester").text(semester);
 
+        const currentYear = new Date().getFullYear();
+        $("#academicYear").text(`${currentYear}/${currentYear + 1}`);
+
         $("#attempted").text(totalCV);
         $("#earned").text(earnedCV);
         $("#gpa").text(gpa);
 
         $("#inputSection").hide();
         $("#resultSection").fadeIn();
+        $("#resultNav").prop("disabled", false);
+        syncNavigation("resultSection");
     });
 
     $("#editDataBtn").click(function () {
         $("#resultSection").hide();
         $("#inputSection").fadeIn();
+        syncNavigation("inputSection");
     });
 
     $("#printBtn").click(async function () {

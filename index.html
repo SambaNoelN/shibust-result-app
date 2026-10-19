@@ -15,6 +15,47 @@
 
 <body>
 
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <img src="image/logo.png" alt="">
+            <span><strong>SHIBUST</strong><small>Result Portal</small></span>
+        </div>
+
+        <p class="nav-heading">WORKSPACE</p>
+        <nav class="sidebar-nav" aria-label="Main navigation">
+            <button class="nav-link active" type="button" data-view="inputSection">
+                <span class="nav-icon" aria-hidden="true">▦</span>
+                <span>Result Generator</span>
+            </button>
+            <button class="nav-link" id="resultNav" type="button" data-view="resultSection" disabled>
+                <span class="nav-icon" aria-hidden="true">▤</span>
+                <span>Result Sheet</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="sidebar-footer-mark">S</span>
+            <span><strong>Academic Office</strong><small>Semester results</small></span>
+        </div>
+    </aside>
+
+    <div class="workspace">
+        <header class="topbar">
+            <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="topbar-heading">
+                <p>SHIBUST ACADEMIC PORTAL</p>
+                <h2 id="viewTitle">Result Generator</h2>
+            </div>
+            <div class="topbar-account">
+                <span class="account-avatar" aria-hidden="true">A</span>
+                <span><strong>Academic Office</strong><small>Result management</small></span>
+            </div>
+        </header>
+
+        <main class="content-area">
 <!-- ================= INPUT SECTION ================= -->
 
 <div class="container" id="inputSection">
@@ -41,17 +82,32 @@
 
             <div class="form-group">
                 <label>Level</label>
-                <input type="text" id="level" required>
+                <select id="level" required>
+                    <option value="" disabled selected>Select level</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label>Department</label>
-                <input type="text" id="department" required>
+                <select id="department" required>
+                    <option value="" disabled selected>Select department</option>
+                    <option value="Medical">Medical</option>
+                    <option value="Business">Business</option>
+                    <option value="Computer">Computer</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label>Semester</label>
-                <input type="text" id="semester" required>
+                <select id="semester" required>
+                    <option value="" disabled selected>Select semester</option>
+                    <option value="First Semester">First Semester</option>
+                    <option value="Second Semester">Second Semester</option>
+                </select>
             </div>
         </div>
     </div>
@@ -63,10 +119,9 @@
         <button id="addCourseBtn" class="add-btn">+ Add New Course</button>
 
         <div class="action-buttons">
-            <button id="generateResultBtn" class="primary-btn">Generate Result Sheet</button>
+            <button id="generateResultBtn" class="primary-btn">Generate Sheet</button>
         </div>
-        <marquee><p style="color: rgb(14, 196, 23); ">miss <b style="color: blueviolet;">Luara</b> thumps up!! if everything is working well!!</p></marquee>
-    </div>
+     </div>
 </div>
 <!-- ================= RESULT SECTION ================= -->
 
@@ -88,7 +143,7 @@
         <div class="right">
             <p><strong>Department:</strong> <span id="displayDepartment"></span></p>
             <p><strong>Semester:</strong> <span id="displaySemester"></span></p>
-            <p><strong>Academic Year:</strong> 2026/2027</p>
+            <p><strong>Academic Year:</strong> <span id="academicYear"></span></p>
         </div>
     </div>
 
@@ -133,6 +188,11 @@
         <p>To get more info about this school scan the QR code above</p>
         <p><strong>Contact:</strong> shibust2023@gmail.com</p>
     </div>
+</div>
+
+        </main>
+    </div>
+    <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Close navigation menu"></button>
 </div>
 
 <script src="script.js"></script>
