@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find and download your SHIBUST semester result.">
+    <title>SHIBUST | Student Results</title>
+    <link rel="icon" href="image/logo.png">
+    <link rel="stylesheet" href="css/student.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="student.js" defer></script>
+</head>
+<body>
+    <main class="student-shell">
+        <header class="student-header">
+            <img src="image/logo.png" alt="SHIBUST logo">
+            <div>
+                <p class="eyebrow">STUDENT PORTAL</p>
+                <h1>Semester Results</h1>
+                <p>Enter your matriculation number to access your published result.</p>
+            </div>
+        </header>
+
+        <section class="student-card lookup-card" aria-labelledby="lookupTitle">
+            <h2 id="lookupTitle">Find your result</h2>
+            <form id="lookupForm">
+                <label for="matricNumber">Matriculation number</label>
+                <div class="lookup-controls">
+                    <input id="matricNumber" name="matricNumber" type="text" autocomplete="off" required>
+                    <button class="button button-primary" type="submit">Find Result</button>
+                </div>
+            </form>
+            <p class="privacy-notice">Demo only: a matriculation number is not secure authentication. Results are stored in this browser and should not be used for private records without a secure backend.</p>
+            <p id="lookupMessage" class="message" role="status" aria-live="polite"></p>
+        </section>
+
+        <section id="studentResult" class="student-card report-card" aria-labelledby="reportTitle" hidden>
+            <div class="report-heading">
+                <div>
+                    <p class="eyebrow">STUDENT INFORMATION</p>
+                    <h2 id="reportTitle">Student Found</h2>
+                </div>
+            </div>
+
+            <div class="student-details">
+                <p><strong>Full Name</strong><span id="reportName"></span></p>
+                <p><strong>Matriculation Number</strong><span id="reportMatric"></span></p>
+                <p><strong>Major / Programme</strong><span id="reportMajor"></span></p>
+                <p><strong>Level</strong><span id="reportLevel"></span></p>
+                <p><strong>Department</strong><span id="reportDepartment"></span></p>
+                <p><strong>Semester</strong><span id="reportSemester"></span></p>
+                <p><strong>Academic Year</strong><span id="reportAcademicYear"></span></p>
+            </div>
+
+            <section class="payment-section" aria-labelledby="paymentTitle">
+                <h3 id="paymentTitle">Get your full result PDF</h3>
+                <p class="payment-intro">Make your payment using one of the Mobile Money services below, then submit your transaction ID to download your full report.</p>
+                <div class="payment-options">
+                    <article class="payment-option mtn-option">
+                        <span class="payment-provider">MTN</span>
+                        <div>
+                            <h4>MTN MoMo</h4>
+                            <p><strong>Account name:</strong> LADIFATOU GBAMO</p>
+                            <p><strong>Send to:</strong> 670763266</p>
+                        </div>
+                    </article>
+                    <article class="payment-option orange-option">
+                        <span class="payment-provider">Orange</span>
+                        <div>
+                            <h4>Orange Money</h4>
+                            <p><strong>Account name:</strong> SAMBA NOEL</p>
+                            <p><strong>Send to:</strong> 688839198</p>
+                        </div>
+                    </article>
+                </div>
+
+                <form id="transactionForm">
+                    <label for="paymentProvider">Payment service</label>
+                    <select id="paymentProvider" name="paymentProvider" required>
+                        <option value="" disabled selected>Select a service</option>
+                        <option value="MTN MoMo">MTN MoMo</option>
+                        <option value="Orange Money">Orange Money</option>
+                    </select>
+                    <label for="transactionId">Transaction ID</label>
+                    <input id="transactionId" name="transactionId" type="text" autocomplete="off" required>
+                    <p class="payment-notice">This demo accepts the transaction ID without checking it with the payment provider. Do not treat this as payment verification.</p>
+                    <button class="button button-primary" type="submit">Submit ID &amp; Download PDF</button>
+                </form>
+                <p id="paymentMessage" class="message" role="status" aria-live="polite"></p>
+                <button id="downloadReport" class="button button-download" type="button" hidden>Download PDF Again</button>
+            </section>
+        </section>
+    </main>
+</body>
+</html>

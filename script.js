@@ -216,7 +216,7 @@ $(document).ready(function () {
             return;
         }
 
-        results.slice().reverse().forEach((result) => {
+        getUniquePublishedResults(results).reverse().forEach((result) => {
             const $row = $("<tr>");
             [result.name, result.matric, result.semester, result.academicYear].forEach((value) => {
                 $row.append($("<td>").text(value));
@@ -235,9 +235,45 @@ $(document).ready(function () {
             .toggle(results.length === 0);
     }
 
+    function hasPublishedReport(results, result) {
+        const reportKey = getReportKey(result);
+
+        return reportKey !== null &&
+            results.some((publishedResult) => getReportKey(publishedResult) === reportKey);
+    }
+
+    function getReportKey(result) {
+        if (!result || typeof result !== "object" ||
+            typeof result.matric !== "string" ||
+            typeof result.semester !== "string" ||
+            typeof result.academicYear !== "string") {
+            return null;
+        }
+
+        return JSON.stringify([
+            result.matric.trim().toUpperCase(),
+            result.semester.trim().toLowerCase(),
+            result.academicYear.trim().toLowerCase()
+        ]);
+    }
+
+    function getUniquePublishedResults(results) {
+        const uniqueResults = new Map();
+        results.forEach((result) => {
+            const key = getReportKey(result);
+            if (key !== null) uniqueResults.set(key, result);
+        });
+        return Array.from(uniqueResults.values());
+    }
+
     function publishResult(result) {
         const results = loadPublishedResults();
         if (!results) return false;
+
+        if (hasPublishedReport(results, result)) {
+            alert("A result for this student, semester, and academic year has already been published.");
+            return false;
+        }
 
         currentResult = result;
         results.push(result);

@@ -1,0 +1,310 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 32px 18px;
+    background: #f1f5f8;
+    color: #263747;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+.student-shell {
+    width: min(100%, 920px);
+    margin: 0 auto;
+}
+
+.student-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.student-header img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+}
+
+.student-header h1 {
+    margin: 3px 0 6px;
+    color: #203b49;
+    font-size: clamp(24px, 4vw, 32px);
+}
+
+.student-header p:last-child {
+    margin: 0;
+    color: #697b89;
+}
+
+.eyebrow {
+    margin: 0;
+    color: #27806f;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.student-card {
+    margin-bottom: 20px;
+    padding: 26px;
+    border: 1px solid #e1e8ed;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 8px 26px rgba(34, 58, 74, 0.07);
+}
+
+.student-card h2 {
+    margin: 0 0 18px;
+    color: #203b49;
+}
+
+label {
+    display: block;
+    margin: 14px 0 7px;
+    color: #3d5260;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+input,
+select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #cad5dc;
+    border-radius: 7px;
+    background: #fff;
+    color: #263747;
+}
+
+input:focus,
+select:focus {
+    border-color: #2c806f;
+    outline: 3px solid rgba(44, 128, 111, 0.14);
+}
+
+.privacy-notice {
+    margin: 12px 0 0;
+    color: #775b23;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.lookup-controls {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+}
+
+.button {
+    min-height: 44px;
+    padding: 10px 17px;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 650;
+}
+
+.button-primary {
+    background: #28566a;
+    color: #fff;
+}
+
+.button-primary:hover {
+    background: #1d4354;
+}
+
+.button-download {
+    width: 100%;
+    margin-top: 12px;
+    background: #21805f;
+    color: #fff;
+}
+
+.button-download:hover:not(:disabled) {
+    background: #176a4d;
+}
+
+.button:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
+}
+
+.message {
+    min-height: 1.2em;
+    margin: 12px 0 0;
+    color: #9b3d35;
+    font-size: 14px;
+}
+
+.message-success {
+    color: #21805f;
+}
+
+.report-card {
+    padding: 30px;
+}
+
+.report-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #28566a;
+}
+
+.report-heading h2 {
+    margin: 5px 0 0;
+}
+
+.student-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 24px;
+    margin-bottom: 22px;
+}
+
+.student-details p {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    color: #344a58;
+}
+
+.student-details strong {
+    color: #768692;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.payment-section {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #e1e8ed;
+}
+
+.payment-section h3 {
+    margin: 0 0 8px;
+    color: #203b49;
+}
+
+.payment-intro,
+.payment-notice {
+    color: #667986;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.payment-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 16px 0 20px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 102px;
+    padding: 15px;
+    border: 1px solid #e0e7eb;
+    border-radius: 10px;
+    background: #fbfcfd;
+}
+
+.payment-provider {
+    display: grid;
+    width: 54px;
+    height: 54px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.mtn-option .payment-provider {
+    background: #f5c400;
+    color: #263747;
+}
+
+.orange-option .payment-provider {
+    background: #ed6b1c;
+}
+
+.payment-option h4 {
+    margin: 0 0 5px;
+    color: #263747;
+}
+
+.payment-option p {
+    margin: 0;
+    color: #667986;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.payment-notice {
+    margin: 10px 0;
+    font-size: 12px;
+}
+
+#transactionForm .button {
+    width: 100%;
+    margin-top: 14px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 20px 12px;
+    }
+
+    .student-header {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .student-header img {
+        width: 54px;
+        height: 54px;
+    }
+
+    .student-header p:last-child {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .student-card,
+    .report-card {
+        padding: 19px;
+    }
+
+    .lookup-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .student-details,
+    .payment-options {
+        grid-template-columns: 1fr;
+    }
+
+    .report-heading {
+        flex-direction: column;
+        gap: 6px;
+    }
+}
