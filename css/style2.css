@@ -164,7 +164,49 @@ button {
 }
 
 .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
     margin-top: 20px;
+}
+
+.published-page {
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+.published-card {
+    padding: 26px;
+    border: 1px solid #e4eaf0;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 8px 25px rgba(30, 55, 75, 0.08);
+}
+
+.published-card h1 {
+    margin-bottom: 8px;
+    color: #213b49;
+    font-size: 24px;
+}
+
+.published-description {
+    margin-bottom: 20px;
+    color: #728294;
+}
+
+.published-table {
+    min-width: 650px;
+}
+
+.published-table .view-report-btn {
+    padding: 8px 12px;
+}
+
+.published-empty {
+    display: none;
+    padding: 22px 10px;
+    color: #728294;
     text-align: center;
 }
 
@@ -192,8 +234,12 @@ button {
     }
 
     .add-btn,
-    .primary-btn {
+    .action-buttons > button {
         width: 100%;
+    }
+
+    .published-card {
+        padding: 18px;
     }
 }
 

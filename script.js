@@ -1,10 +1,24 @@
 $(document).ready(function () {
 
+    const publishedResultsKey = "shibustPublishedResults";
+    let currentResult = null;
+
     function syncNavigation(view) {
-        const isResultView = view === "resultSection";
         $(".nav-link").removeClass("active");
         $(`.nav-link[data-view="${view}"]`).addClass("active");
-        $("#viewTitle").text(isResultView ? "Result Sheet" : "Result Generator");
+        const viewTitles = {
+            inputSection: "Result Generator",
+            resultSection: "Result Sheet",
+            publishedSection: "Published Results"
+        };
+        $("#viewTitle").text(viewTitles[view]);
+    }
+
+    function showView(view) {
+        $(".content-area > .container, .content-area > .result-sheet").hide();
+        $(`#${view}`).fadeIn();
+        syncNavigation(view);
+        closeMobileSidebar();
     }
 
     function closeMobileSidebar() {
@@ -16,10 +30,8 @@ $(document).ready(function () {
         const view = $(this).data("view");
         if ($(this).prop("disabled")) return;
 
-        $("#inputSection, #resultSection").hide();
-        $(`#${view}`).fadeIn();
-        syncNavigation(view);
-        closeMobileSidebar();
+        showView(view);
+        if (view === "publishedSection") renderPublishedResults();
     });
 
     $("#sidebarToggle").click(function () {
@@ -37,8 +49,8 @@ $(document).ready(function () {
                     <input type="text" class="code" placeholder="Course Code" required>
                     <input type="text" class="title" placeholder="Course Title" required>
                     <input type="number" class="cv" min="1" max="6" placeholder="CV" required>
-                    <input type="number" class="ca" min="0" max="40" placeholder="CA (0-30)" required>
-                    <input type="number" class="exam" min="0" max="60" placeholder="Exam (0-70)" required>
+                    <input type="number" class="ca" min="0" max="30" placeholder="CA (0-30)" required>
+                    <input type="number" class="exam" min="0" max="70" placeholder="Exam (0-70)" required>
                 </div>
             </div>
         `;
@@ -66,8 +78,7 @@ $(document).ready(function () {
         return { grade: 'F', point: 0.0 };
     }
 
-    $("#generateResultBtn").click(function () {
-
+    function createResultFromForm() {
         const name = $("#studentName").val().trim();
         const matric = $("#matricNo").val().trim();
         const major = $("#major").val().trim();
@@ -77,30 +88,38 @@ $(document).ready(function () {
 
         if (!name || !matric || !major || !level || !department || !semester) {
             alert("Please complete all student information.");
-            return;
+            return null;
         }
 
         let totalCV = 0;
         let earnedCV = 0;
         let totalPoints = 0;
-
-        $("#resultTable tbody").empty();
-
-        let validCourse = false;
+        const courses = [];
+        let validationError = "";
 
         $(".course-entry").each(function (index) {
 
             const code = $(this).find(".code").val().trim();
             const title = $(this).find(".title").val().trim();
-            const cv = parseInt($(this).find(".cv").val());
-            const ca = parseInt($(this).find(".ca").val());
-            const exam = parseInt($(this).find(".exam").val());
+            const cvInput = $(this).find(".cv").val();
+            const caInput = $(this).find(".ca").val();
+            const examInput = $(this).find(".exam").val();
 
-            if (!code || !title || !cv) return;
+            if (!code && !title && !cvInput && !caInput && !examInput) return;
+            if (!code || !title || !cvInput || !caInput || !examInput) {
+                validationError = "Please complete every field for each course.";
+                return false;
+            }
 
-            if (ca > 30 || exam > 70) {
-                alert("CA must be ≤ 30 and Exam ≤ 70.");
-                return;
+            const cv = Number(cvInput);
+            const ca = Number(caInput);
+            const exam = Number(examInput);
+
+            if (!Number.isInteger(cv) || cv < 1 || cv > 6 ||
+                !Number.isInteger(ca) || ca < 0 || ca > 30 ||
+                !Number.isInteger(exam) || exam < 0 || exam > 70) {
+                validationError = "Course credits must be 1–6, CA 0–30, and Exam 0–70.";
+                return false;
             }
 
             const total = ca + exam;
@@ -113,54 +132,155 @@ $(document).ready(function () {
                 earnedCV += cv;
             }
 
-            $("#resultTable tbody").append(`
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${code}</td>
-                    <td>${title}</td>
-                    <td>${cv}</td>
-                    <td>${ca}</td>
-                    <td>${exam}</td>
-                    <td>${total}</td>
-                    <td>${result.grade}</td>
-                </tr>
-            `);
-
-            validCourse = true;
+            courses.push({ number: index + 1, code, title, cv, ca, exam, total, grade: result.grade });
         });
 
-        if (!validCourse) {
+        if (validationError) {
+            alert(validationError);
+            return null;
+        }
+
+        if (!courses.length) {
             alert("Please enter at least one valid course.");
+            return null;
+        }
+
+        const currentYear = new Date().getFullYear();
+        return {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            name,
+            matric,
+            major,
+            level,
+            department,
+            semester,
+            academicYear: `${currentYear}/${currentYear + 1}`,
+            courses,
+            attempted: totalCV,
+            earned: earnedCV,
+            gpa: (totalPoints / totalCV).toFixed(2),
+            publishedAt: new Date().toISOString()
+        };
+    }
+
+    function renderResult(result) {
+        currentResult = result;
+        $("#displayName").text(result.name);
+        $("#displayMatric").text(result.matric);
+        $("#displayMajor").text(result.major);
+        $("#displayLevel").text(result.level);
+        $("#displayDepartment").text(result.department);
+        $("#displaySemester").text(result.semester);
+        $("#academicYear").text(result.academicYear);
+
+        const rows = result.courses.map((course) => {
+            const $row = $("<tr>");
+            [
+                course.number,
+                course.code,
+                course.title,
+                course.cv,
+                course.ca,
+                course.exam,
+                course.total,
+                course.grade
+            ].forEach((value) => $row.append($("<td>").text(value)));
+            return $row;
+        });
+        $("#resultTable tbody").empty().append(rows);
+        $("#attempted").text(result.attempted);
+        $("#earned").text(result.earned);
+        $("#gpa").text(result.gpa);
+        $("#resultNav").prop("disabled", false);
+    }
+
+    function loadPublishedResults() {
+        try {
+            const savedResults = localStorage.getItem(publishedResultsKey);
+            const results = savedResults ? JSON.parse(savedResults) : [];
+            if (!Array.isArray(results)) {
+                throw new Error("Published results data is not a list.");
+            }
+            return results;
+        } catch (error) {
+            alert(`Unable to load published results: ${error.message}`);
+            return null;
+        }
+    }
+
+    function renderPublishedResults() {
+        const results = loadPublishedResults();
+        const $body = $("#publishedResultsBody").empty();
+        if (!results) {
+            $("#publishedResultsEmpty").text("Published results could not be loaded.").show();
             return;
         }
 
-        const gpa = (totalPoints / totalCV).toFixed(2);
+        results.slice().reverse().forEach((result) => {
+            const $row = $("<tr>");
+            [result.name, result.matric, result.semester, result.academicYear].forEach((value) => {
+                $row.append($("<td>").text(value));
+            });
+            const $viewButton = $("<button>", {
+                class: "primary-btn view-report-btn",
+                type: "button",
+                text: "View Report"
+            }).data("result", result);
+            $row.append($("<td>").append($viewButton));
+            $body.append($row);
+        });
 
-        $("#displayName").text(name);
-        $("#displayMatric").text(matric);
-        $("#displayMajor").text(major);
-        $("#displayLevel").text(level);
-        $("#displayDepartment").text(department);
-        $("#displaySemester").text(semester);
+        $("#publishedResultsEmpty")
+            .text(results.length ? "" : "No results have been published yet.")
+            .toggle(results.length === 0);
+    }
 
-        const currentYear = new Date().getFullYear();
-        $("#academicYear").text(`${currentYear}/${currentYear + 1}`);
+    function publishResult(result) {
+        const results = loadPublishedResults();
+        if (!results) return false;
 
-        $("#attempted").text(totalCV);
-        $("#earned").text(earnedCV);
-        $("#gpa").text(gpa);
+        currentResult = result;
+        results.push(result);
+        try {
+            localStorage.setItem(publishedResultsKey, JSON.stringify(results));
+        } catch (error) {
+            alert(`Unable to publish this result: ${error.message}`);
+            return false;
+        }
 
-        $("#inputSection").hide();
-        $("#resultSection").fadeIn();
-        $("#resultNav").prop("disabled", false);
-        syncNavigation("resultSection");
+        renderPublishedResults();
+        showView("publishedSection");
+        return true;
+    }
+
+    $("#generateResultBtn").click(function () {
+        const result = createResultFromForm();
+        if (!result) return;
+
+        renderResult(result);
+        showView("resultSection");
+    });
+
+    $("#publishResultBtn").click(function () {
+        const result = createResultFromForm();
+        if (result) publishResult(result);
+    });
+
+    $("#publishCurrentResultBtn").click(function () {
+        if (currentResult) publishResult(currentResult);
+    });
+
+    $(document).on("click", ".view-report-btn", function () {
+        const result = $(this).data("result");
+        renderResult(result);
+        showView("resultSection");
     });
 
     $("#editDataBtn").click(function () {
-        $("#resultSection").hide();
-        $("#inputSection").fadeIn();
-        syncNavigation("inputSection");
+        showView("inputSection");
     });
+
+    renderPublishedResults();
 
     $("#printBtn").click(async function () {
 

@@ -10,6 +10,7 @@ A lightweight, browser-based tool for entering student and course information, c
 - Automatic grade, attempted-credit, earned-credit, and GPA calculations.
 - Academic year displayed as the current calendar year and the following year (for example, `2026/2027`).
 - Print the result sheet or save it as a PDF.
+- Publish results to a browser-stored list and reopen each student's full report.
 - Return to the form to edit the entered information.
 
 ## Getting started
@@ -26,7 +27,8 @@ Alternatively, serve the project directory with any static web server and open t
 1. Enter the student's name, matriculation number, major/programme, level, department, and semester.
 2. Add course details and scores. Use **+ Add New Course** to add rows or the **×** button to remove a row.
 3. Select **Generate Sheet** to calculate and view the result.
-4. Use **Print / Save PDF** to print or download the sheet. Use **Edit Data** to return to the form.
+4. Select **Publish Result** to save the result and open the published-results list. Use **View Report** beside a student to reopen their full report.
+5. Use **Print / Save PDF** to print or download the sheet. Use **Edit Data** to return to the form.
 
 Available levels are 100, 200, 300, and 400. Departments are Medical, Business, and Computer. Semesters are First Semester and Second Semester.
 
@@ -57,5 +59,5 @@ GPA is calculated as the credit-weighted average of course grade points. Credit 
 
 ## Notes
 
-- The app runs entirely in the browser; it does not use a backend or save entries between page reloads.
+- The app runs entirely in the browser and does not use a backend. Published results are stored in the browser's local storage, so they remain available after a reload in the same browser.
 - PDF export and external JavaScript libraries require an internet connection when loaded from their CDNs.

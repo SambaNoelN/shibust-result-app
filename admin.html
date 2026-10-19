@@ -32,6 +32,10 @@
                 <span class="nav-icon" aria-hidden="true">▤</span>
                 <span>Result Sheet</span>
             </button>
+            <button class="nav-link" type="button" data-view="publishedSection">
+                <span class="nav-icon" aria-hidden="true">▣</span>
+                <span>Published Results</span>
+            </button>
         </nav>
 
         <div class="sidebar-footer">
@@ -120,6 +124,7 @@
 
         <div class="action-buttons">
             <button id="generateResultBtn" class="primary-btn">Generate Sheet</button>
+            <button id="publishResultBtn" class="secondary-btn" type="button">Publish Result</button>
         </div>
      </div>
 </div>
@@ -180,6 +185,7 @@
 
     <div class="action-buttons">
         <button id="printBtn" class="primary-btn">Print / Save PDF</button>
+        <button id="publishCurrentResultBtn" class="secondary-btn" type="button">Publish Result</button>
         <button id="editDataBtn" class="secondary-btn">Edit Data</button>
     </div>
 
@@ -189,6 +195,28 @@
         <p><strong>Contact:</strong> shibust2023@gmail.com</p>
     </div>
 </div>
+
+<section class="container published-page" id="publishedSection" style="display:none;" aria-labelledby="publishedTitle">
+    <div class="published-card">
+        <h1 id="publishedTitle">Published Results</h1>
+        <p class="published-description">View reports that have been published from this browser.</p>
+        <div class="table-wrapper">
+            <table class="published-table">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Matriculation Number</th>
+                        <th>Semester</th>
+                        <th>Academic Year</th>
+                        <th>Report</th>
+                    </tr>
+                </thead>
+                <tbody id="publishedResultsBody"></tbody>
+            </table>
+        </div>
+        <p class="published-empty" id="publishedResultsEmpty">No results have been published yet.</p>
+    </div>
+</section>
 
         </main>
     </div>
