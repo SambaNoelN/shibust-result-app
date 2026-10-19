@@ -179,13 +179,8 @@ $(document).ready(function () {
             const imgWidth = 190;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-            //testing 
-            
-
-
-
             pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
-            pdf.save("${name}_Result.pdf");
+            pdf.save("SHIBUST_Semester_Result.pdf");
 
         } catch (error) {
             alert("PDF generation failed. Please use Print.");
