@@ -11,6 +11,8 @@ A lightweight, browser-based tool for entering student and course information, c
 - Academic year displayed as the current calendar year and the following year (for example, `2026/2027`).
 - Print the result sheet or save it as a PDF.
 - Publish results to a browser-stored list and reopen each student's full report.
+- Track opening balance, dated income, expenses, and a chronological running balance in the admin Cash Book.
+- Print the Cash Book or save it as a PDF, and export it as an Excel-compatible CSV file.
 - Prevent publishing more than one report for the same matriculation number, semester, and academic year.
 - Student matriculation lookup that shows basic student information only, then downloads the full result PDF after a transaction ID is submitted.
 - Return to the form to edit the entered information.
@@ -32,6 +34,7 @@ Alternatively, serve the project directory with any static web server and open t
 4. Select **Publish Result** to save the result and open the published-results list. Use **View Report** beside a student to reopen their full report.
 5. Use **Print / Save PDF** to print or download the sheet. Use **Edit Data** to return to the form.
 6. Open `student.html` and enter the student's matriculation number. Only basic student information is shown; submitting a Mobile Money transaction ID downloads the full report as a PDF.
+7. Select **Cash Book** in the admin navigation to set an opening balance and add dated income or expense transactions. The ledger recalculates balances by date and saves entries in this browser. Use **Print / Save PDF** to print or save the ledger as a PDF, or **Export for Excel** to download a CSV spreadsheet.
 
 Available levels are 100, 200, 300, and 400. Departments are Medical, Business, and Computer. Semesters are First Semester and Second Semester.
 
@@ -63,6 +66,6 @@ GPA is calculated as the credit-weighted average of course grade points. Credit 
 
 ## Notes
 
-- The app runs entirely in the browser and does not use a backend. Published results are stored in the browser's local storage, so they remain available after a reload in the same browser.
+- The app runs entirely in the browser and does not use a backend. Published results and Cash Book entries are stored in the browser's local storage, so they remain available after a reload in the same browser.
 - The student page reads the same browser-stored published results. It is a demonstration flow, not a secure student login or payment verification system; transaction IDs are not checked with MTN or Orange. Configure official payment account details and add a backend/payment-provider integration before using it for real payments or private student records.
 - PDF export and external JavaScript libraries require an internet connection when loaded from their CDNs.

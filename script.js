@@ -1,7 +1,9 @@
 $(document).ready(function () {
 
     const publishedResultsKey = "shibustPublishedResults";
+    const cashBookKey = "shibustCashBook";
     let currentResult = null;
+    let cashBook = loadCashBook();
 
     function syncNavigation(view) {
         $(".nav-link").removeClass("active");
@@ -9,13 +11,14 @@ $(document).ready(function () {
         const viewTitles = {
             inputSection: "Result Generator",
             resultSection: "Result Sheet",
-            publishedSection: "Published Results"
+            publishedSection: "Published Results",
+            cashbookSection: "Cash Book"
         };
         $("#viewTitle").text(viewTitles[view]);
     }
 
     function showView(view) {
-        $(".content-area > .container, .content-area > .result-sheet").hide();
+        $(".content-area > .container, .content-area > .result-sheet, .content-area > .cashbook-page").hide();
         $(`#${view}`).fadeIn();
         syncNavigation(view);
         closeMobileSidebar();
@@ -234,6 +237,231 @@ $(document).ready(function () {
             .text(results.length ? "" : "No results have been published yet.")
             .toggle(results.length === 0);
     }
+
+    function loadCashBook() {
+        try {
+            const savedCashBook = localStorage.getItem(cashBookKey);
+            if (!savedCashBook) return { openingBalance: 0, transactions: [] };
+
+            const data = JSON.parse(savedCashBook);
+            if (!data || typeof data !== "object" ||
+                !Number.isFinite(data.openingBalance) || data.openingBalance < 0 ||
+                !Array.isArray(data.transactions) ||
+                data.transactions.some((transaction) =>
+                    !transaction || typeof transaction.id !== "string" ||
+                    typeof transaction.date !== "string" ||
+                    typeof transaction.description !== "string" ||
+                    !["income", "expense"].includes(transaction.type) ||
+                    !Number.isFinite(transaction.amount) || transaction.amount <= 0
+                )) {
+                throw new Error("Cash Book data is invalid.");
+            }
+
+            return data;
+        } catch (error) {
+            alert(`Unable to load the Cash Book: ${error.message}`);
+            return null;
+        }
+    }
+
+    function saveCashBook(data) {
+        try {
+            localStorage.setItem(cashBookKey, JSON.stringify(data));
+            return true;
+        } catch (error) {
+            alert(`Unable to save the Cash Book: ${error.message}`);
+            return false;
+        }
+    }
+
+    function formatCashBookAmount(amount) {
+        return amount.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function getLocalDateValue() {
+        const today = new Date();
+        const offset = today.getTimezoneOffset() * 60000;
+        return new Date(today.getTime() - offset).toISOString().slice(0, 10);
+    }
+
+    function appendCashBookCell($row, value) {
+        $row.append($("<td>").text(value));
+    }
+
+    function renderCashBook() {
+        const $body = $("#cashbookTransactionsBody").empty();
+        if (!cashBook) {
+            $("#cashbookEmpty").text("Cash Book data could not be loaded.").show();
+            $("#cashbookSection input, #cashbookSection select, #cashbookSection button").prop("disabled", true);
+            return;
+        }
+
+        const openingBalance = cashBook.openingBalance;
+        let balance = openingBalance;
+        let totalIncome = 0;
+        let totalExpenses = 0;
+        const transactions = cashBook.transactions
+            .map((transaction, index) => ({ ...transaction, index }))
+            .sort((first, second) => first.date.localeCompare(second.date) || first.index - second.index);
+
+        $("#openingBalance").val(openingBalance.toFixed(2));
+
+        const $openingRow = $("<tr>");
+        appendCashBookCell($openingRow, "—");
+        appendCashBookCell($openingRow, "Starting balance");
+        appendCashBookCell($openingRow, "—");
+        appendCashBookCell($openingRow, "—");
+        appendCashBookCell($openingRow, formatCashBookAmount(balance));
+        appendCashBookCell($openingRow, "—");
+        $body.append($openingRow);
+
+        transactions.forEach((transaction) => {
+            const $row = $("<tr>");
+            if (transaction.type === "income") {
+                totalIncome += transaction.amount;
+                balance += transaction.amount;
+            } else {
+                totalExpenses += transaction.amount;
+                balance -= transaction.amount;
+            }
+
+            appendCashBookCell($row, transaction.date);
+            appendCashBookCell($row, transaction.description);
+            appendCashBookCell($row, transaction.type === "income" ? formatCashBookAmount(transaction.amount) : "—");
+            appendCashBookCell($row, transaction.type === "expense" ? formatCashBookAmount(transaction.amount) : "—");
+            appendCashBookCell($row, formatCashBookAmount(balance));
+
+            const $deleteButton = $("<button>", {
+                class: "cashbook-delete-btn",
+                type: "button",
+                text: "Remove",
+                "aria-label": `Remove transaction: ${transaction.description}`
+            }).data("transaction-id", transaction.id);
+            $row.append($("<td>").addClass("cashbook-actions-column").append($deleteButton));
+            $body.append($row);
+        });
+
+        $("#cashbookIncomeTotal").text(formatCashBookAmount(totalIncome));
+        $("#cashbookExpenseTotal").text(formatCashBookAmount(totalExpenses));
+        $("#cashbookCurrentBalance").text(formatCashBookAmount(balance));
+        $("#cashbookEmpty").toggle(transactions.length === 0);
+    }
+
+    function csvCell(value, protectFormula = false) {
+        let text = String(value);
+        if (protectFormula && /^[\t\r ]*[=+\-@]/.test(text)) text = `'${text}`;
+        return `"${text.replace(/"/g, '""')}"`;
+    }
+
+    function exportCashBook() {
+        if (!cashBook) return;
+
+        const rows = [["Date", "Description", "Income", "Expenses", "Balance"]];
+        let balance = cashBook.openingBalance;
+        rows.push(["", "Starting balance", "", "", balance.toFixed(2)]);
+
+        const transactions = cashBook.transactions
+            .map((transaction, index) => ({ ...transaction, index }))
+            .sort((first, second) => first.date.localeCompare(second.date) || first.index - second.index);
+        transactions.forEach((transaction) => {
+            if (transaction.type === "income") balance += transaction.amount;
+            else balance -= transaction.amount;
+
+            rows.push([
+                transaction.date,
+                transaction.description,
+                transaction.type === "income" ? transaction.amount.toFixed(2) : "",
+                transaction.type === "expense" ? transaction.amount.toFixed(2) : "",
+                balance.toFixed(2)
+            ]);
+        });
+
+        const csv = "\uFEFF" + rows.map((row) =>
+            row.map((value, index) => csvCell(value, index === 1)).join(",")
+        ).join("\r\n");
+        const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "SHIBUST_Cash_Book.csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    $("#cashbookDate").val(getLocalDateValue());
+    renderCashBook();
+
+    $("#openingBalance").on("change", function () {
+        if (!cashBook) return;
+        const openingBalance = Number(this.value);
+        if (!Number.isFinite(openingBalance) || openingBalance < 0) {
+            alert("Opening balance must be zero or more.");
+            $(this).val(cashBook.openingBalance.toFixed(2));
+            return;
+        }
+
+        const updatedCashBook = { ...cashBook, openingBalance };
+        if (saveCashBook(updatedCashBook)) {
+            cashBook = updatedCashBook;
+            renderCashBook();
+        } else {
+            $(this).val(cashBook.openingBalance.toFixed(2));
+        }
+    });
+
+    $("#cashbookEntryForm").on("submit", function (event) {
+        event.preventDefault();
+        if (!cashBook) return;
+
+        const transaction = {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+            date: $("#cashbookDate").val(),
+            description: $("#cashbookDescription").val().trim(),
+            type: $("#cashbookType").val(),
+            amount: Number($("#cashbookAmount").val())
+        };
+        if (!transaction.date || !transaction.description ||
+            !["income", "expense"].includes(transaction.type) ||
+            !Number.isFinite(transaction.amount) || transaction.amount <= 0) {
+            alert("Enter a date, description, and an amount greater than zero.");
+            return;
+        }
+
+        const updatedCashBook = {
+            ...cashBook,
+            transactions: [...cashBook.transactions, transaction]
+        };
+        if (saveCashBook(updatedCashBook)) {
+            cashBook = updatedCashBook;
+            this.reset();
+            $("#cashbookDate").val(getLocalDateValue());
+            renderCashBook();
+        }
+    });
+
+    $(document).on("click", ".cashbook-delete-btn", function () {
+        if (!cashBook) return;
+        const transactionId = $(this).data("transaction-id");
+        const updatedCashBook = {
+            ...cashBook,
+            transactions: cashBook.transactions.filter((transaction) => transaction.id !== transactionId)
+        };
+        if (saveCashBook(updatedCashBook)) {
+            cashBook = updatedCashBook;
+            renderCashBook();
+        }
+    });
+
+    $("#exportCashbookBtn").click(exportCashBook);
+    $("#printCashbookBtn").click(function () {
+        document.body.classList.add("cashbook-print");
+        window.print();
+    });
+    window.addEventListener("afterprint", () => document.body.classList.remove("cashbook-print"));
 
     function hasPublishedReport(results, result) {
         const reportKey = getReportKey(result);
