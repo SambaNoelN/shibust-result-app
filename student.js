@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         resultSection.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
-    paymentForm.addEventListener("submit", (event) => {
+    paymentForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!selectedResult) {
             showMessage(paymentMessage, "Find your published result before submitting a transaction ID.");
@@ -106,18 +106,90 @@ document.addEventListener("DOMContentLoaded", () => {
 
         downloadButton.hidden = false;
         try {
-            downloadPdf(selectedResult);
+            await downloadPdf(selectedResult);
             showMessage(paymentMessage, "Your full result PDF has been downloaded. Payment has not been verified.", true);
         } catch (error) {
             showMessage(paymentMessage, `PDF download failed: ${error.message}`);
         }
     });
 
-    function downloadPdf(result) {
+    function loadStampImage() {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error("The SHIBUST stamp image could not be loaded."));
+            image.src = "shibuststamp.jpeg";
+        });
+    }
+
+    function cropStampImage(image) {
+        const sourceCanvas = document.createElement("canvas");
+        sourceCanvas.width = image.naturalWidth;
+        sourceCanvas.height = image.naturalHeight;
+        const sourceContext = sourceCanvas.getContext("2d");
+        if (!sourceContext) {
+            throw new Error("The SHIBUST stamp image could not be prepared for the PDF.");
+        }
+        sourceContext.drawImage(image, 0, 0);
+
+        const { data, width, height } = sourceContext.getImageData(
+            0,
+            0,
+            sourceCanvas.width,
+            sourceCanvas.height
+        );
+        let left = width;
+        let top = height;
+        let right = 0;
+        let bottom = 0;
+        for (let y = 0; y < height; y += 1) {
+            for (let x = 0; x < width; x += 1) {
+                const pixel = (y * width + x) * 4;
+                if (data[pixel] < 245 || data[pixel + 1] < 245 || data[pixel + 2] < 245) {
+                    left = Math.min(left, x);
+                    top = Math.min(top, y);
+                    right = Math.max(right, x);
+                    bottom = Math.max(bottom, y);
+                }
+            }
+        }
+        if (right < left || bottom < top) {
+            throw new Error("The SHIBUST stamp image is blank.");
+        }
+
+        const padding = Math.round(Math.max(right - left, bottom - top) * 0.03);
+        left = Math.max(0, left - padding);
+        top = Math.max(0, top - padding);
+        right = Math.min(width - 1, right + padding);
+        bottom = Math.min(height - 1, bottom + padding);
+
+        const stampCanvas = document.createElement("canvas");
+        stampCanvas.width = right - left + 1;
+        stampCanvas.height = bottom - top + 1;
+        const stampContext = stampCanvas.getContext("2d");
+        if (!stampContext) {
+            throw new Error("The SHIBUST stamp image could not be prepared for the PDF.");
+        }
+        stampContext.drawImage(
+            sourceCanvas,
+            left,
+            top,
+            stampCanvas.width,
+            stampCanvas.height,
+            0,
+            0,
+            stampCanvas.width,
+            stampCanvas.height
+        );
+        return stampCanvas.toDataURL("image/png");
+    }
+
+    async function downloadPdf(result) {
         if (!window.jspdf || !window.jspdf.jsPDF) {
             throw new Error("The PDF library could not be loaded. Check your internet connection and try again.");
         }
 
+        const stampImage = cropStampImage(await loadStampImage());
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
         const pageWidth = pdf.internal.pageSize.getWidth();
@@ -215,14 +287,29 @@ document.addEventListener("DOMContentLoaded", () => {
         pdf.text(`Credit Earned: ${result.earned}`, margin + 60, y);
         pdf.text(`GPA: ${result.gpa}/4.0`, margin + 125, y);
 
+        const stampSize = 27;
+        const stampCaptionY = y + stampSize + 10;
+        if (stampCaptionY > pageHeight - margin) {
+            pdf.addPage();
+            y = margin;
+        }
+        const stampX = pageWidth - margin - stampSize;
+        const stampY = y + 5;
+        pdf.addImage(stampImage, "PNG", stampX, stampY, stampSize, stampSize);
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(9);
+        pdf.text("Official Stamp", stampX + stampSize / 2, stampY + stampSize + 5, {
+            align: "center"
+        });
+
         const safeMatric = result.matric.replace(/[^a-z0-9-_]/gi, "_");
         pdf.save(`SHIBUST_Result_${safeMatric}.pdf`);
     }
 
-    downloadButton.addEventListener("click", () => {
+    downloadButton.addEventListener("click", async () => {
         if (!selectedResult || downloadButton.hidden) return;
         try {
-            downloadPdf(selectedResult);
+            await downloadPdf(selectedResult);
         } catch (error) {
             showMessage(paymentMessage, `PDF download failed: ${error.message}`);
         }

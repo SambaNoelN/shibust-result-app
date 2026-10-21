@@ -24,7 +24,11 @@
 
         <p class="nav-heading">WORKSPACE</p>
         <nav class="sidebar-nav" aria-label="Main navigation">
-            <button class="nav-link active" type="button" data-view="inputSection">
+            <button class="nav-link active" type="button" data-view="dashboardSection">
+                <span class="nav-icon" aria-hidden="true">▦</span>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-link" type="button" data-view="inputSection">
                 <span class="nav-icon" aria-hidden="true">▦</span>
                 <span>Result Generator</span>
             </button>
@@ -35,6 +39,14 @@
             <button class="nav-link" type="button" data-view="publishedSection">
                 <span class="nav-icon" aria-hidden="true">▣</span>
                 <span>Published Results</span>
+            </button>
+            <button class="nav-link" type="button" data-view="studentsSection">
+                <span class="nav-icon" aria-hidden="true">♙</span>
+                <span>Students</span>
+            </button>
+            <button class="nav-link" type="button" data-view="lecturersSection">
+                <span class="nav-icon" aria-hidden="true">♧</span>
+                <span>Lecturers</span>
             </button>
             <button class="nav-link" type="button" data-view="cashbookSection">
                 <span class="nav-icon" aria-hidden="true">$</span>
@@ -64,9 +76,74 @@
         </header>
 
         <main class="content-area">
+<section class="dashboard-page" id="dashboardSection" aria-labelledby="dashboardTitle">
+    <div class="dashboard-heading">
+        <div>
+            <p class="cashbook-eyebrow">ADMIN OVERVIEW</p>
+            <h1 id="dashboardTitle">Dashboard</h1>
+            <p class="published-description">A snapshot of academic records and finances in this browser.</p>
+        </div>
+        <div class="dashboard-quick-actions" aria-label="Quick actions">
+            <button class="secondary-btn" type="button" data-dashboard-action="result">Generate Result</button>
+            <button class="secondary-btn" type="button" data-dashboard-action="student">Add Student</button>
+            <button class="secondary-btn" type="button" data-dashboard-action="lecturer">Add Lecturer</button>
+            <button class="primary-btn" type="button" data-dashboard-action="transaction">Add Transaction</button>
+        </div>
+    </div>
+
+    <div class="dashboard-metrics" aria-label="Directory summary">
+        <article class="dashboard-metric">
+            <span>Total Students</span>
+            <strong id="dashboardStudentCount">—</strong>
+            <small id="dashboardActiveStudents">Loading records</small>
+        </article>
+        <article class="dashboard-metric">
+            <span>Lecturers</span>
+            <strong id="dashboardLecturerCount">—</strong>
+            <small id="dashboardFullTimeLecturers">Loading records</small>
+        </article>
+        <article class="dashboard-metric">
+            <span>Published Results</span>
+            <strong id="dashboardResultCount">—</strong>
+            <small>Unique student, semester, and year reports</small>
+        </article>
+        <article class="dashboard-metric dashboard-metric-balance">
+            <span>Cash Book Balance</span>
+            <strong id="dashboardCashBalance">—</strong>
+            <small>Opening balance plus recorded transactions</small>
+        </article>
+    </div>
+
+    <div class="dashboard-chart-grid">
+        <article class="dashboard-chart-card">
+            <h2>Students by Enrollment Status</h2>
+            <p>Current student directory breakdown</p>
+            <div id="dashboardStudentStatusChart" class="dashboard-bar-chart" aria-live="polite"></div>
+        </article>
+        <article class="dashboard-chart-card">
+            <h2>Students by Level</h2>
+            <p>Distribution across academic levels</p>
+            <div id="dashboardStudentLevelChart" class="dashboard-bar-chart" aria-live="polite"></div>
+        </article>
+        <article class="dashboard-chart-card">
+            <h2>Lecturers by Employment Status</h2>
+            <p>Current lecturer directory breakdown</p>
+            <div id="dashboardLecturerStatusChart" class="dashboard-bar-chart" aria-live="polite"></div>
+        </article>
+        <article class="dashboard-chart-card">
+            <h2>Cash Book: Last 6 Months</h2>
+            <p>Income and expenses by transaction month</p>
+            <div class="dashboard-chart-legend">
+                <span><i class="dashboard-legend-income"></i>Income</span>
+                <span><i class="dashboard-legend-expense"></i>Expenses</span>
+            </div>
+            <div id="dashboardCashFlowChart" class="dashboard-month-chart" aria-live="polite"></div>
+        </article>
+    </div>
+</section>
 <!-- ================= INPUT SECTION ================= -->
 
-<div class="container" id="inputSection">
+<div class="container" id="inputSection" style="display:none;">
     <h1 class="page-title">SOLIDARITY HIGHER INSTITUTE OF BUSINESS SCIENCE AND TECHNOLOGY</h1>
     <h1 class="page-title">(SHIBUST)</h1>
 
@@ -221,6 +298,289 @@
         <p class="published-empty" id="publishedResultsEmpty">No results have been published yet.</p>
     </div>
 </section>
+
+<section class="students-page" id="studentsSection" style="display:none;" aria-labelledby="studentsTitle">
+    <div class="students-card">
+        <div class="students-heading">
+            <div>
+                <p class="cashbook-eyebrow">ACADEMIC RECORDS</p>
+                <h1 id="studentsTitle">Student Directory</h1>
+                <p class="published-description">Create, view, and maintain student records.</p>
+            </div>
+            <div class="students-heading-actions">
+                <button class="secondary-btn" id="printStudentsBtn" type="button">Print / Save PDF</button>
+                <button class="secondary-btn" id="exportStudentsBtn" type="button">Export for Excel</button>
+                <button class="primary-btn" id="addStudentBtn" type="button">Add Student</button>
+            </div>
+        </div>
+
+        <div class="students-toolbar">
+            <label class="visually-hidden" for="studentSearch">Search students</label>
+            <input id="studentSearch" type="search" placeholder="Search by name or matriculation number">
+            <label class="visually-hidden" for="studentStatusFilter">Filter by enrollment status</label>
+            <select id="studentStatusFilter">
+                <option value="">All statuses</option>
+                <option>Active</option>
+                <option>Suspended</option>
+                <option>Graduated</option>
+                <option>Deferred</option>
+            </select>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Matriculation Number</th>
+                        <th>Department / Level</th>
+                        <th>Courses</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsBody"></tbody>
+            </table>
+        </div>
+        <p class="published-empty" id="studentsEmpty">No student records yet. Add a student to get started.</p>
+    </div>
+    <div id="studentsPrintReport" class="students-print-report" aria-label="Printable student directory"></div>
+</section>
+
+<section class="lecturers-page" id="lecturersSection" style="display:none;" aria-labelledby="lecturersTitle">
+    <div class="students-card">
+        <div class="students-heading">
+            <div>
+                <p class="cashbook-eyebrow">ACADEMIC RECORDS</p>
+                <h1 id="lecturersTitle">Lecturer Directory</h1>
+                <p class="published-description">Create, view, and maintain lecturer records.</p>
+            </div>
+            <div class="students-heading-actions">
+                <button class="secondary-btn" id="printLecturersBtn" type="button">Print / Save PDF</button>
+                <button class="secondary-btn" id="exportLecturersBtn" type="button">Export for Excel</button>
+                <button class="primary-btn" id="addLecturerBtn" type="button">Add Lecturer</button>
+            </div>
+        </div>
+
+        <div class="students-toolbar">
+            <label class="visually-hidden" for="lecturerSearch">Search lecturers</label>
+            <input id="lecturerSearch" type="search" placeholder="Search by name, email, or department">
+            <label class="visually-hidden" for="lecturerStatusFilter">Filter by employment status</label>
+            <select id="lecturerStatusFilter">
+                <option value="">All employment statuses</option>
+                <option>Full-Time</option>
+                <option>Part-Time</option>
+                <option>Visiting</option>
+                <option>On Leave</option>
+            </select>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>Lecturer</th>
+                        <th>Institutional Email</th>
+                        <th>Department / Academic Rank</th>
+                        <th>Employment Status</th>
+                        <th>Courses</th>
+                        <th>Advisor</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="lecturersBody"></tbody>
+            </table>
+        </div>
+        <p class="published-empty" id="lecturersEmpty">No lecturer records yet. Add a lecturer to get started.</p>
+    </div>
+    <div id="lecturersPrintReport" class="students-print-report" aria-label="Printable lecturer directory"></div>
+</section>
+
+<dialog class="student-dialog" id="studentFormDialog" aria-labelledby="studentFormTitle">
+    <form id="studentForm" class="student-dialog-content">
+        <div class="student-dialog-heading">
+            <div>
+                <p class="cashbook-eyebrow">STUDENT RECORD</p>
+                <h2 id="studentFormTitle">Add Student</h2>
+            </div>
+            <button class="dialog-close" type="button" data-close-dialog="studentFormDialog" aria-label="Close">×</button>
+        </div>
+        <input type="hidden" name="recordId">
+
+        <fieldset class="student-fieldset">
+            <legend>Identification & Academic Status</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="studentMatric">Matriculation Number *</label><input id="studentMatric" name="matriculationNumber" required maxlength="40" readonly aria-describedby="studentMatricHint"><small id="studentMatricHint">Generated from admission year and department.</small></div>
+                <div class="form-group"><label for="studentAdmissionYear">Admission Year *</label><input id="studentAdmissionYear" name="admissionYear" type="number" min="1900" max="2100" required></div>
+                <div class="form-group"><label for="studentLevel">Current Level *</label><select id="studentLevel" name="currentLevel" required><option value="">Select level</option><option>Level 100</option><option>Level 200</option><option>Level 300</option><option>Level 400</option></select></div>
+                <div class="form-group"><label for="studentEnrollmentStatus">Enrollment Status *</label><select id="studentEnrollmentStatus" name="enrollmentStatus" required><option>Active</option><option>Suspended</option><option>Graduated</option><option>Deferred</option></select></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Personal Information</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="studentFirstName">First Name *</label><input id="studentFirstName" name="firstName" required maxlength="80"></div>
+                <div class="form-group"><label for="studentLastName">Last Name *</label><input id="studentLastName" name="lastName" required maxlength="80"></div>
+                <div class="form-group student-photo-field">
+                    <label for="studentPhotoUpload">Upload Profile Photo</label>
+                    <input id="studentPhotoUpload" name="profilePhotoUpload" type="file" accept="image/*">
+                    <small>Choose an image from your device. It will be saved in this browser.</small>
+                    <img id="studentPhotoPreview" class="student-photo-preview" alt="Selected student profile preview" hidden>
+                    <label for="studentPhoto">Or use Profile Photo URL</label>
+                    <input id="studentPhoto" name="profilePhotoUrl" type="text" maxlength="500" placeholder="https://... or /uploads/photo.jpg">
+                </div>
+                <div class="form-group"><label for="studentDob">Date of Birth</label><input id="studentDob" name="dateOfBirth" type="date"></div>
+                <div class="form-group"><label for="studentGender">Gender</label><select id="studentGender" name="gender"><option value="">Select gender</option><option>Male</option><option>Female</option></select></div>
+                <div class="form-group"><label for="studentNationality">Nationality</label><select id="studentNationality" name="nationality"><option value="">Select nationality</option><option>Cameroonian</option><option>Other</option></select></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Academic & Department</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="studentFaculty">Faculty / School</label><input id="studentFaculty" name="facultySchool" maxlength="120"></div>
+                <div class="form-group"><label for="studentDepartment">Department *</label><input id="studentDepartment" name="department" maxlength="120" required></div>
+                <div class="form-group"><label for="studentProgram">Program / Major</label><input id="studentProgram" name="programMajor" maxlength="120"></div>
+                <div class="form-group"><label for="studentAdvisor">Assigned Advisor / Tutor</label><input id="studentAdvisor" name="assignedAdvisorTutor" maxlength="120"></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Enrolled Courses</legend>
+            <p class="student-course-editor-help">Add the courses this student is currently taking. Marks appear from published result sheets.</p>
+            <div id="studentCoursesEditor" class="profile-course-editor"></div>
+            <button class="secondary-btn profile-course-add" type="button" data-add-profile-course="studentCoursesEditor">Add Course</button>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Contact & Emergency Details</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="studentEmail">Student Email</label><input id="studentEmail" name="studentEmail" type="email" maxlength="120"></div>
+                <div class="form-group"><label for="studentPersonalEmail">Personal Email</label><input id="studentPersonalEmail" name="personalEmail" type="email" maxlength="120"></div>
+                <div class="form-group"><label for="studentPhone">Phone Number</label><input id="studentPhone" name="phoneNumber" type="tel" maxlength="40"></div>
+                <div class="form-group"><label for="studentEmergencyName">Emergency Contact Name</label><input id="studentEmergencyName" name="emergencyContactName" maxlength="120"></div>
+                <div class="form-group"><label for="studentEmergencyPhone">Emergency Contact Phone</label><input id="studentEmergencyPhone" name="emergencyContactPhone" type="tel" maxlength="40"></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Administrative & Financial</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="studentTuitionStatus">Tuition Status</label><select id="studentTuitionStatus" name="tuitionStatus"><option value="">Not specified</option><option>Fully Paid</option><option>Partially Paid</option><option>Owing</option></select></div>
+                <div class="form-group"><label for="studentPortalUsername">Portal Username</label><input id="studentPortalUsername" name="portalUsername" maxlength="80" autocomplete="off"></div>
+                <div class="form-group student-login-note"><span>Password / login</span><p>Student login is not enabled. No password is stored.</p></div>
+            </div>
+        </fieldset>
+
+        <div class="student-form-actions">
+            <button class="secondary-btn" type="button" data-close-dialog="studentFormDialog">Cancel</button>
+            <button class="primary-btn" type="submit">Save Student</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog class="student-dialog" id="lecturerFormDialog" aria-labelledby="lecturerFormTitle">
+    <form id="lecturerForm" class="student-dialog-content">
+        <div class="student-dialog-heading">
+            <div>
+                <p class="cashbook-eyebrow">LECTURER RECORD</p>
+                <h2 id="lecturerFormTitle">Add Lecturer</h2>
+            </div>
+            <button class="dialog-close" type="button" data-close-dialog="lecturerFormDialog" aria-label="Close">×</button>
+        </div>
+        <input type="hidden" name="originalEmail">
+
+        <fieldset class="student-fieldset">
+            <legend>Identification & Academic Rank</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="lecturerEmail">Lecturer Email *</label><input id="lecturerEmail" name="lecturerEmail" type="email" required maxlength="120"></div>
+                <div class="form-group"><label for="lecturerEmploymentStatus">Employment Status *</label><select id="lecturerEmploymentStatus" name="employmentStatus" required><option>Full-Time</option><option>Part-Time</option><option>Visiting</option><option>On Leave</option></select></div>
+                <div class="form-group"><label for="lecturerAcademicRank">Academic Rank *</label><select id="lecturerAcademicRank" name="academicRank" required><option value="">Select rank</option><option>Graduate Assistant</option><option>Lecturer I</option><option>Senior Lecturer</option><option>Associate Professor</option><option>Professor</option></select></div>
+                <div class="form-group"><label for="lecturerDateOfHiring">Date of Hiring</label><input id="lecturerDateOfHiring" name="dateOfHiring" type="date"></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Personal Information</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="lecturerFirstName">First Name *</label><input id="lecturerFirstName" name="firstName" required maxlength="80"></div>
+                <div class="form-group"><label for="lecturerLastName">Last Name *</label><input id="lecturerLastName" name="lastName" required maxlength="80"></div>
+                <div class="form-group student-photo-field">
+                    <label for="lecturerPhotoUpload">Upload Profile Photo</label>
+                    <input id="lecturerPhotoUpload" name="profilePhotoUpload" type="file" accept="image/*">
+                    <small>Choose an image from your device. It will be saved in this browser.</small>
+                    <img id="lecturerPhotoPreview" class="student-photo-preview" alt="Selected lecturer profile preview" hidden>
+                    <label for="lecturerPhotoUrl">Or use Profile Photo URL</label>
+                    <input id="lecturerPhotoUrl" name="profilePhotoUrl" type="text" maxlength="500" placeholder="https://... or /uploads/photo.jpg">
+                </div>
+                <div class="form-group"><label for="lecturerGender">Gender</label><select id="lecturerGender" name="gender"><option value="">Select gender</option><option>Male</option><option>Female</option></select></div>
+                <div class="form-group"><label for="lecturerQualification">Highest Qualification</label><input id="lecturerQualification" name="highestQualification" maxlength="100" placeholder="e.g. M.Sc., Ph.D., MBA"></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Institutional & Departmental Mapping</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="lecturerFaculty">Faculty / School</label><input id="lecturerFaculty" name="facultySchool" maxlength="120"></div>
+                <div class="form-group"><label for="lecturerDepartment">Primary Department *</label><input id="lecturerDepartment" name="primaryDepartment" required maxlength="120"></div>
+                <div class="form-group"><label for="lecturerOffice">Office Location</label><input id="lecturerOffice" name="officeLocation" maxlength="120"></div>
+                <div class="form-group lecturer-advisor-field"><label for="lecturerIsAdvisor">Can be assigned as advisor / tutor</label><input id="lecturerIsAdvisor" name="isAdvisor" type="checkbox" value="true"></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Contact Details</legend>
+            <div class="student-form-grid">
+                <div class="form-group"><label for="lecturerPhone">Phone Number</label><input id="lecturerPhone" name="phoneNumber" type="tel" maxlength="40"></div>
+            </div>
+        </fieldset>
+
+        <fieldset class="student-fieldset">
+            <legend>Courses Taught</legend>
+            <p class="student-course-editor-help">Add the courses assigned to this lecturer.</p>
+            <div id="lecturerCoursesEditor" class="profile-course-editor"></div>
+            <button class="secondary-btn profile-course-add" type="button" data-add-profile-course="lecturerCoursesEditor">Add Course</button>
+        </fieldset>
+
+        <div class="student-form-actions">
+            <button class="secondary-btn" type="button" data-close-dialog="lecturerFormDialog">Cancel</button>
+            <button class="primary-btn" type="submit">Save Lecturer</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog class="student-dialog" id="lecturerDetailsDialog" aria-labelledby="lecturerDetailsTitle">
+    <div class="student-dialog-content">
+        <div class="student-dialog-heading">
+            <div>
+                <p class="cashbook-eyebrow">LECTURER PROFILE</p>
+                <h2 id="lecturerDetailsTitle">Lecturer Details</h2>
+            </div>
+            <button class="dialog-close" type="button" data-close-dialog="lecturerDetailsDialog" aria-label="Close">×</button>
+        </div>
+        <div id="lecturerDetailsContent"></div>
+        <div class="student-form-actions">
+            <button class="secondary-btn" type="button" data-close-dialog="lecturerDetailsDialog">Close</button>
+        </div>
+    </div>
+</dialog>
+
+<dialog class="student-dialog" id="studentDetailsDialog" aria-labelledby="studentDetailsTitle">
+    <div class="student-dialog-content">
+        <div class="student-dialog-heading">
+            <div>
+                <p class="cashbook-eyebrow">STUDENT PROFILE</p>
+                <h2 id="studentDetailsTitle">Student Details</h2>
+            </div>
+            <button class="dialog-close" type="button" data-close-dialog="studentDetailsDialog" aria-label="Close">×</button>
+        </div>
+        <div id="studentDetailsContent"></div>
+        <div class="student-form-actions">
+            <button class="secondary-btn" type="button" data-close-dialog="studentDetailsDialog">Close</button>
+        </div>
+    </div>
+</dialog>
 
 <section class="cashbook-page" id="cashbookSection" style="display:none;" aria-labelledby="cashbookTitle">
     <div class="cashbook-card">
